@@ -1,30 +1,40 @@
 import io.restassured.RestAssured;
+import io.restassured.http.Headers;
 import io.restassured.path.json.JsonPath;
 import io.restassured.response.Response;
 import org.junit.jupiter.api.Test;
 
-import java.lang.reflect.Array;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
 
 public class HelloWorldTest{
 
     @Test
-    public void testRestAssured(){
+    public void testRestAssured() throws InterruptedException {
 
-        Response response = RestAssured
+        JsonPath responseForToken = RestAssured
+                .get("https://playground.learnqa.ru/ajax/api/longtime_job")
+                .jsonPath();
+
+        String responseToken = responseForToken.get("token");
+
+        Map<String, String> params = new HashMap<>();
+        params.put("token", responseToken);
+        int timeToSleep = responseForToken.get("seconds");
+
+        // Create a TimeUnit object
+        TimeUnit time = TimeUnit.SECONDS;
+        time.sleep(timeToSleep);
+
+        Response responseWithToken = RestAssured
+
                 .given()
-                .redirects()
-                .follow(false)
+                .queryParams(params)
                 .when()
-                .get("https://playground.learnqa.ru/api/long_redirect")
+                .get("https://playground.learnqa.ru/ajax/api/longtime_job")
                 .andReturn();
-
-        response.prettyPrint();
-
-        String locationHeader = response.getHeader("Location");
-        System.out.println(locationHeader);
+        responseWithToken.print();
 
     }
 }
