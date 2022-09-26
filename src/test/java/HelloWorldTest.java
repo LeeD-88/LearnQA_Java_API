@@ -1,40 +1,49 @@
 import io.restassured.RestAssured;
-import io.restassured.http.Headers;
 import io.restassured.path.json.JsonPath;
 import io.restassured.response.Response;
 import org.junit.jupiter.api.Test;
 
+import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.concurrent.TimeUnit;
+
+import static io.restassured.RestAssured.given;
 
 public class HelloWorldTest{
 
     @Test
-    public void testRestAssured() throws InterruptedException {
+    public void testRestAssured(){
 
-        JsonPath responseForToken = RestAssured
-                .get("https://playground.learnqa.ru/ajax/api/longtime_job")
-                .jsonPath();
-
-        String responseToken = responseForToken.get("token");
-
-        Map<String, String> params = new HashMap<>();
-        params.put("token", responseToken);
-        int timeToSleep = responseForToken.get("seconds");
-
-        // Create a TimeUnit object
-        TimeUnit time = TimeUnit.SECONDS;
-        time.sleep(timeToSleep);
-
-        Response responseWithToken = RestAssured
-
-                .given()
-                .queryParams(params)
+        Response responseFirst = given()
+                .redirects()
+                .follow(false)
                 .when()
-                .get("https://playground.learnqa.ru/ajax/api/longtime_job")
+                .get("https://playground.learnqa.ru/api/long_redirect")
                 .andReturn();
-        responseWithToken.print();
+
+        responseFirst.prettyPrint();
+
+       /*int statusCode = responseFirst.getStatusCode();
+        String locationHeader = responseFirst.getHeader("Location");
+        System.out.println(statusCode);
+        System.out.println(locationHeader);*/
+
+        int count=0;
+        int statusCode = responseFirst.getStatusCode();
+        String locationHeader = responseFirst.getHeader("Location");
+        while (statusCode==301) {
+
+            Response responseNext = given()
+                    .redirects()
+                    .follow(false)
+                    .when()
+                    .get("nextAddress")
+                    .andReturn();
+            count++;
+            if (statusCode==200){
+                responseNext.prettyPrint();
+            }
+        }
 
     }
 }
