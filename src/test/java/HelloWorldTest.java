@@ -2,48 +2,33 @@ import io.restassured.RestAssured;
 import io.restassured.path.json.JsonPath;
 import io.restassured.response.Response;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
 
-import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
 
-import static io.restassured.RestAssured.given;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
 
 public class HelloWorldTest{
 
-    @Test
-    public void testRestAssured(){
-
-        Response responseFirst = given()
-                .redirects()
-                .follow(false)
-                .when()
-                .get("https://playground.learnqa.ru/api/long_redirect")
-                .andReturn();
-
-        responseFirst.prettyPrint();
-
-       /*int statusCode = responseFirst.getStatusCode();
-        String locationHeader = responseFirst.getHeader("Location");
-        System.out.println(statusCode);
-        System.out.println(locationHeader);*/
-
-        int count=0;
-        int statusCode = responseFirst.getStatusCode();
-        String locationHeader = responseFirst.getHeader("Location");
-        while (statusCode==301) {
-
-            Response responseNext = given()
-                    .redirects()
-                    .follow(false)
-                    .when()
-                    .get("nextAddress")
-                    .andReturn();
-            count++;
-            if (statusCode==200){
-                responseNext.prettyPrint();
-            }
-        }
+   @ParameterizedTest
+   @ValueSource(strings = {"", "Nik", "NikName15symbol", "NikName16symbols"})
+    public void testHelloMethodWithoutName(String nikName){
+       Map<String, String> queryParams = new HashMap<>();
+       if (nikName.length()>15){
+           queryParams.put("nikName", nikName);
+       }
+        JsonPath response = RestAssured
+                .given()
+                .queryParam("nikName", nikName)
+                .get("https://playground.learnqa.ru/api/hello")
+                .jsonPath();
+        String answer = response.getString("answer");
+        String expectedName = (nikName.length() <=15) ? nikName : "someone";
+        assertEquals("Hello, " + expectedName, answer, "The answer is noe expected");
 
     }
+
 }
