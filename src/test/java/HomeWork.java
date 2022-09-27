@@ -13,15 +13,15 @@ public class HomeWork {
     @Test
     public void testGetCookie(){
 
-        Response responseGetCookie = RestAssured
+        Response responseGetHeaders = RestAssured
                 .given()
-                .get("https://playground.learnqa.ru/api/homework_cookie")
+                .get("https://playground.learnqa.ru/api/homework_header")
                 .andReturn();
 
-        Map<String, String> cookies = responseGetCookie.getCookies();
+        Headers headers = responseGetHeaders.getHeaders();
 
-        assertEquals(200, responseGetCookie.statusCode(), "Unexpected status code");
-        assertTrue(cookies.containsKey("HomeWork"), "Response doesn't have 'HomeWork' cookie");
+        assertEquals(200, responseGetHeaders.statusCode(), "Unexpected status code");
+        assertTrue(headers.hasHeaderWithName("x-secret-homework-header"), "Response doesn't have 'x-secret-homework-header' header");
 
     }
 }
