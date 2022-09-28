@@ -13,7 +13,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 public class HomeWork {
 
     @ParameterizedTest
-    @CsvFileSource(resources = "C:/Users/demidova.ln/Desktop/LearnQA_Java_API/dataUserAgent.csv", numLinesToSkip = 1)
+    @CsvFileSource(resources = "C:\\dataUserAgent.csv", numLinesToSkip = 1)
     void toUpperCase_ShouldGenerateTheExpectedUppercaseValueCSVFile(
             String input, String expected) {
         String actualValue = input.toUpperCase();
