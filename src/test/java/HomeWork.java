@@ -2,6 +2,8 @@ import io.restassured.RestAssured;
 import io.restassured.http.Headers;
 import io.restassured.response.Response;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.CsvFileSource;
 
 import java.util.Map;
 
@@ -10,18 +12,13 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class HomeWork {
 
-    @Test
-    public void testGetCookie(){
-
-        Response responseGetHeaders = RestAssured
-                .given()
-                .get("https://playground.learnqa.ru/api/homework_header")
-                .andReturn();
-
-        Headers headers = responseGetHeaders.getHeaders();
-
-        assertEquals(200, responseGetHeaders.statusCode(), "Unexpected status code");
-        assertTrue(headers.hasHeaderWithName("x-secret-homework-header"), "Response doesn't have 'x-secret-homework-header' header");
-
+    @ParameterizedTest
+    @CsvFileSource(resources = "C:/Users/demidova.ln/Desktop/LearnQA_Java_API/dataUserAgent.csv", numLinesToSkip = 1)
+    void toUpperCase_ShouldGenerateTheExpectedUppercaseValueCSVFile(
+            String input, String expected) {
+        String actualValue = input.toUpperCase();
+        assertEquals(expected, actualValue);
     }
+
 }
+
