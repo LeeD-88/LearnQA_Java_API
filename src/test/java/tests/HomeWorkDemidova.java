@@ -1,14 +1,14 @@
 package tests;
 
-import io.restassured.RestAssured;
-import io.restassured.response.Response;
-import org.junit.jupiter.api.Test;
+        import io.restassured.RestAssured;
+        import io.restassured.response.Response;
+        import org.junit.jupiter.api.Test;
 
-import java.io.IOException;
-import java.net.URL;
+        import java.io.IOException;
+        import java.net.URL;
 
 
-public class secondHomeWork {
+public class HomeWorkDemidova {
 
     @Test
     public void testRestAssured() throws IOException {
@@ -28,12 +28,12 @@ public class secondHomeWork {
 
         URL obj = new URL(url);
         Response responseSecondRedrect = RestAssured
-                    .given()
-                    .redirects()
-                    .follow(false)
-                    .when()
-                    .get(obj)
-                    .andReturn();
+                .given()
+                .redirects()
+                .follow(false)
+                .when()
+                .get(obj)
+                .andReturn();
 
         statusCode = responseSecondRedrect.getStatusCode();
         System.out.println(statusCode);
