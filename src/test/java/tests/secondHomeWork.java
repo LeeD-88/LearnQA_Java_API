@@ -8,7 +8,7 @@ import java.io.IOException;
 import java.net.URL;
 
 
-public class homeWork {
+public class secondHomeWork {
 
     @Test
     public void testRestAssured() throws IOException {
